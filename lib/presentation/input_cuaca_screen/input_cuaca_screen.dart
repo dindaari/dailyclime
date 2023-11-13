@@ -5,6 +5,9 @@ import 'package:dindari_s_daily_clime/widgets/app_bar/custom_app_bar.dart';
 import 'package:dindari_s_daily_clime/widgets/custom_elevated_button.dart';
 import 'package:dindari_s_daily_clime/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+
+// import "./openCamera.dart"
 
 class InputCuacaScreen extends StatelessWidget {
   const InputCuacaScreen({Key? key})
@@ -62,22 +65,24 @@ class InputCuacaScreen extends StatelessWidget {
                           width: 150.h,
                           padding: EdgeInsets.all(9.h),
                           alignment: Alignment.center,
+                          onTap: () => openCamera(context),
                           child: CustomImageView(
                             imagePath: ImageConstant.imgGroup17,
                           ),
+                          // onTap: () => openCamera(context),
                         ),
                         Align(
                           alignment: Alignment.bottomRight,
                           child: Container(
+                            height: 33.v,
                             width: 57.h,
                             margin: EdgeInsets.only(right: 36.h),
-                            child: Text(
-                              "Camera",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: CustomTextStyles.bodyMediumKadwaGray90001,
-                            ),
+                            child: Text("Camera",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style:
+                                    CustomTextStyles.bodyMediumKadwaGray90001),
                           ),
                         ),
                       ],
@@ -131,6 +136,47 @@ class InputCuacaScreen extends StatelessWidget {
         text: "WEATHER",
       ),
       styleType: Style.bgGradientnameprimarynameerrorContaineropacity08,
+    );
+  }
+
+  // Metode statis untuk membuka kamera
+  static void openCamera(BuildContext context) async {
+    final cameras = await availableCameras();
+    final firstCamera = cameras.first;
+
+    // Inisialisasi kontrol kamera
+    final CameraController controller = CameraController(
+      firstCamera,
+      ResolutionPreset.medium,
+    );
+
+    // Inisialisasi kamera
+    await controller.initialize();
+
+    // Buka layar kamera
+    // Pastikan untuk mengganti 'YourCurrentPage' dengan nama kelas halaman saat ini
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => YourCurrentPage(cameraController: controller),
+      ),
+    );
+  }
+}
+
+class YourCurrentPage extends StatelessWidget {
+  final CameraController cameraController;
+
+  const YourCurrentPage({Key? key, required this.cameraController})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Your Camera Page'),
+      ),
+      body: CameraPreview(cameraController),
     );
   }
 }
